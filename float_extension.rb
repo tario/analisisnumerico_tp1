@@ -34,7 +34,7 @@ private
 
   def compute_mantissa_and_exponent
 
-    x = self
+    x = self.abs
     exponente = 0
 
     while (x < 1.0 or x >= 2.0)
