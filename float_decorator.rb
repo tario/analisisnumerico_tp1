@@ -44,6 +44,10 @@ class FloatPrecisionDecorator
     return self, other
   end
 
+  def to_s
+    @inner.to_s
+  end
+
   def inspect
     # para que llame al inspect del float decorado
     @inner.inspect

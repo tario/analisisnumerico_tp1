@@ -33,6 +33,11 @@ class Float
 private
 
   def compute_mantissa_and_exponent
+    if self == 0
+      @mantissa = 0.0
+      @exponent = 0.0
+      return
+    end
 
     x = self.abs
     exponente = 0
