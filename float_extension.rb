@@ -16,6 +16,20 @@ class Float
     @exponent
   end
 
+  def sign
+    if self < 0
+      -1
+    elsif self > 0
+      1
+    else
+      0
+    end
+  end
+
+  def rounded_mantissa(decimals = 0)
+    sign * 2 ** exponent * mantissa.binary_round(decimals)   
+  end
+
 private
 
   def compute_mantissa_and_exponent

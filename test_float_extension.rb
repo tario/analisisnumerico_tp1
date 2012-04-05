@@ -21,3 +21,11 @@ suite( _set(1.0, 1.25, 1.5, 1.75) => 0,
        _set(0.5, 0.625, 0.75, 0.875) => -1
      ).test( :exponent.to_proc )
 
+# redondeo de mantisa a 0 decimales
+suite(_set(2.3, 2.2, 2.1, 2.25, 2.45) => 2.0).test(:rounded_mantissa.to_proc)
+suite(_set(3.75, 3.8) => 4.0).test(:rounded_mantissa.to_proc)
+
+# redondeo de mantisa a 1 decimal
+suite(_set(2.75, 2.6, 2.8) => 3.0, _set(2.3, 2.2, 2.1, 2.25, 2.45) => 2.0, 2048.5 => 2048.0).test( lambda{|x| x.rounded_mantissa(1)})
+
+
