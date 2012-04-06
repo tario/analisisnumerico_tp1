@@ -1,5 +1,3 @@
-require "float_decorator"
-
 # efectua la sumatoria de los terminos de una sucesion hasta
 # que se acerque suficiente a un referencia
 # el tercer parametro, es el criterio de parada que debera determinar
