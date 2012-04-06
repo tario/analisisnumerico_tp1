@@ -1,4 +1,115 @@
-require "float_decorator"
+class Float
+  def binary_round(decimals = 0)
+    factor = 2**decimals
+    (self * factor).round(0).to_f / factor
+  end
+
+  # extrae la mantisa del numero
+  def mantissa
+    compute_mantissa_and_exponent unless @mantissa
+    @mantissa
+  end
+
+  def exponent
+    compute_mantissa_and_exponent unless @exponente
+    @exponent
+  end
+
+  def sign
+    if self < 0
+      -1
+    elsif self > 0
+      1
+    else
+      0
+    end
+  end
+
+  def rounded_mantissa(decimals = 0)
+    sign * 2 ** exponent * mantissa.binary_round(decimals)   
+  end
+
+private
+
+  def compute_mantissa_and_exponent
+    if self == 0
+      @mantissa = 0.0
+      @exponent = 0.0
+      return
+    end
+
+    x = self.abs
+    exponente = 0
+
+    while (x < 1.0 or x >= 2.0)
+      if x < 1.0
+        exponente = exponente - 1
+        x = x * 2 
+      elsif x >= 2.0
+        exponente = exponente + 1
+        x = x / 2
+      end
+    end
+
+    @exponent = exponente
+    @mantissa = x
+  end
+end
+
+class Numeric
+  def to_single_precision(decimals)
+    FloatPrecisionDecorator.new(self.rounded_mantissa(decimals), decimals)
+  end
+
+  def single(decimals = 23)
+    to_single_precision(decimals)
+  end
+end
+
+class FloatPrecisionDecorator 
+  def initialize(inner, decimals)
+    @decimals = decimals
+    @inner = inner.to_f
+  end
+
+  def method_missing(m,*x)
+    # todas las operaciones sobre el numero se ejecutan sobre el float verdadero
+    # y se obtiene el verdadero resultado con precision completa del Float original
+
+    if x.size > 0
+      if FloatPrecisionDecorator === x.first
+        verdadero_resultado = @inner.send(m,x.first.instance_variable_get(:@inner))
+      else
+        verdadero_resultado = @inner.send(m,*x)
+      end    
+    else
+      verdadero_resultado = @inner.send(m,*x)
+    end
+    # si es numeric, truncar y wrappear
+    if Numeric === verdadero_resultado
+      # se reduce la precision, multiplicando por el factor, redondeando y volviendo a dividir
+      reduced = verdadero_resultado.to_f.rounded_mantissa(@decimals)
+      FloatPrecisionDecorator.new(reduced, @decimals)
+    else
+      # si no, devolve el resultado como es
+      verdadero_resultado
+    end
+  end
+
+  def coerce(other)
+    return self, other
+  end
+
+  def to_s
+    @inner.to_s
+  end
+
+  def inspect
+    # para que llame al inspect del float decorado
+    @inner.inspect
+  end
+end
+
 
 # encuentra la raiz de x = f[x] usando la tecnica del punto fijo
 # hasta obtener un error menor que el especificado comparado con
