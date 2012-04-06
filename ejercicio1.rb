@@ -3,17 +3,19 @@ require "float_decorator"
 # encuentra la raiz de x = f[x] usando la tecnica del punto fijo
 # hasta obtener un error menor que el especificado comparado con
 # un valor de referencia
-def punto_fijo(f, error_maximo, referencia, inicial = 0)
+def punto_fijo(f, stop, inicial = 0)
   # asignamos a x el valor inicial
   x = inicial
+  xprev = x
 
   # iteramos infinitamente mientras la diferencia en valor absoluto
   # entre el valor de referencia y x sean superiores al error maximo
-  while (x-referencia).abs > error_maximo
+  while not stop[x,xprev]
     # en cada iteracion, asignamos a x el resultado de evaluar f[x] con el x anterior
     # como podemos prescindir del x anterior pisamos la misma variable
     # si evaluaramos los errores usando las diferencias entre distintos x de la secuencia
     # utilizariamos otra variable mas el x del ciclo anterior
+    xprev = x
     x = f[x]
   end
 
@@ -22,15 +24,15 @@ def punto_fijo(f, error_maximo, referencia, inicial = 0)
 end
 
 # encuentra la raiz de f[x] = 0 usando la tecnica de newton rapson
-# iterando hasta obtener un error menor que el especificado comparado
-# con un valor de referencia, es necesario pasar como parametro la derivada
-# de la funcion
+# la cual define una funcion cuyo punto fijo es tambien la raiz d f
+# es necesario pasar como parametro la derivada
+# de la funcion y el criterio de parada que usara el metodo del punto fijo
 
-def newton_rapson(f, fd, error_maximo, referencia, inicial = 0)
+def newton_rapson(f, fd, stop, inicial = 0)
   # se plantea una funcion cuyo punto fijo es tambien
   # raiz de f[x], segun como lo estipula el metodo de new rapson
   g = lambda{|x| x - f[x]/fd[x] }
-  return punto_fijo(g, error_maximo, referencia, inicial)
+  return punto_fijo(g, stop, inicial)
 end
 
 # Calcula la raiz exponente de un numero usando el algoritmo iterativo
@@ -61,7 +63,7 @@ def raiz(valor,exponente,referencia)
   inicial = (maximo_valor + minimo_valor) / 2 
 
   # invocar el metodo de newton rapson
-  return newton_rapson(funcion, derivada, 0.01, referencia, inicial)
+  return newton_rapson(funcion, derivada, lambda{|x,xprev| ((x-referencia)/x).abs < 0.0001 }, inicial)
 end
 
 print "con precision doble (mantisa: 52 bits)\n" 
