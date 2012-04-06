@@ -46,7 +46,7 @@ derivada_n_sin = lambda{|n|
 }
 # x0 = pi/2
 print "sin(pi/3): "
-print taylor(derivada_n_sin, - Math::PI/6.0, lambda{|x,n| (x-Math::sin(Math::PI/3.0)).abs < 0.01}), "\n"
+print taylor(derivada_n_sin, - Math::PI/6.0, lambda{|x,n| ( (x-Math::sin(Math::PI/3.0)) / x).abs < 0.0001}), "\n"
 
 
 # la derivada enesima de cos(x) evaluada en pi/2 
@@ -63,5 +63,5 @@ derivada_n_cos = lambda{|n|
 }
 # x0 = pi/2
 print "cos(pi/3): "
-print taylor(derivada_n_cos, - Math::PI/6.0,  lambda{|x,n| (x-Math::cos(Math::PI/3.0)).abs < 0.01}), "\n"
+print taylor(derivada_n_cos, - Math::PI/6.0,  lambda{|x,n|  ( (x-Math::cos(Math::PI/3.0)) / x).abs < 0.0001}), "\n"
 
