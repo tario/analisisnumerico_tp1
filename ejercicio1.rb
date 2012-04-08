@@ -62,7 +62,7 @@ class Numeric
   end
 
   def single(decimals = 23)
-    to_single_precision(decimals)
+    decimals > 52 ? self : to_single_precision(decimals)
   end
 end
 
@@ -185,7 +185,7 @@ def raiz(valor,exponente,referencia)
 end
 
 require "timeout"
-{53 => "doble", 23 => "simple simulada", 13 => "custom 13 bits", 10 => "media"}.each do |k,v|
+{53 => "doble", 23 => "simple simulada", 14 => "custom 14 bits", 10 => "media simulada"}.each do |k,v|
 timeout(10) do
 
   print "con precision #{v} (mantisa: #{k} bits)\n" 
