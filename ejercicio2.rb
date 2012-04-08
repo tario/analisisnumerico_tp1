@@ -149,80 +149,49 @@ def taylor(derivada_n, diferenciax0, stop)
   serie(sucesion, stop)
 end
 
-# la derivada enesima de sin(x) evaluada en pi/2 
-derivada_n_sin = lambda{|n|
-  if n%2 == 0 # si el numero es par
-    if n%4 == 0
-      1
-    else
-      -1
+require "timeout"
+{53 => "doble", 23 => "simple simulada", 13 => "custom 13 bits", 10 => "media"}.each do |k,v|
+
+timeout(10) do
+
+  print "Con precision #{v} (#{k} bits de mantisa):\n"
+
+  # la derivada enesima de sin(x) evaluada en pi/2 
+  derivada_n_sin = lambda{|n|
+    if n%2 == 0 # si el numero es par
+      if n%4 == 0
+        k > 52 ? 1 : 1.0.single(k)
+      else
+        k > 52 ? -1 : -1.0.single(k)
+      end
+    else # si el numero es impar, vale cero
+      k > 52 ? 0 : 0.0.single(k)
     end
-  else # si el numero es impar, vale cero
-    0
-  end
-}
+  }
 
-print "Con precision doble (52 bits de mantisa):\n"
+  # x0 = pi/2
+  print "sin(pi/3): "
+  referencia = Math::sin(Math::PI/3.0)
+  print taylor(derivada_n_sin, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
 
-# x0 = pi/2
-print "sin(pi/3): "
-referencia = Math::sin(Math::PI/3.0)
-print taylor(derivada_n_sin, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
-
-
-# la derivada enesima de cos(x) evaluada en pi/2 
-derivada_n_cos = lambda{|n|
-  if n%2 == 0 # si el numero es par, vale cero
-    0
-  else # si el numero es impar
-    if n%4 == 1
-      -1
-    else
-      1
+  # la derivada enesima de cos(x) evaluada en pi/2 
+  derivada_n_cos = lambda{|n|
+    if n%2 == 0 # si el numero es par, vale cero
+      k > 52 ? 0 : 0.0.single(k) 
+    else # si el numero es impar
+      if n%4 == 1
+        k > 52 ? -1 : -1.0.single(k)
+      else
+        k > 52 ? 1 : 1.0.single(k)
+      end
     end
-  end
-}
-# x0 = pi/2
-print "cos(pi/3): "
-referencia = Math::cos(Math::PI/3.0)
-print taylor(derivada_n_cos, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
+  }
+  # x0 = pi/2
+  print "cos(pi/3): "
+  referencia = Math::cos(Math::PI/3.0)
+  print taylor(derivada_n_cos, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
 
-# la derivada enesima de sin(x) evaluada en pi/2 
-derivada_n_sin = lambda{|n|
-  if n%2 == 0 # si el numero es par
-    if n%4 == 0
-      1.0.single
-    else
-      -1.0.single
-    end
-  else # si el numero es impar, vale cero
-    0.0.single
-  end
-}
+end
 
-print "Con precision simple (23 bits de mantisa):\n"
-
-
-# x0 = pi/2
-print "sin(pi/3): "
-referencia = Math::sin(Math::PI/3.0)
-print taylor(derivada_n_sin, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
-
-# la derivada enesima de cos(x) evaluada en pi/2 
-derivada_n_cos = lambda{|n|
-  if n%2 == 0 # si el numero es par, vale cero
-    0.0.single
-  else # si el numero es impar
-    if n%4 == 1
-      -1.0.single
-    else
-      1.0.single
-    end
-  end
-}
-# x0 = pi/2
-print "cos(pi/3): "
-referencia = Math::cos(Math::PI/3.0)
-print taylor(derivada_n_cos, - Math::PI/6.0,  lambda{|x,n| ((x-referencia) / (x == 0.0 ? 0.01 : x) ).abs < 0.0001}), "\n"
-
+end
 
