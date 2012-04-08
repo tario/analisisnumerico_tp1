@@ -184,15 +184,16 @@ def raiz(valor,exponente,referencia)
   return newton_rapson(funcion, derivada, lambda{|x,xprev| ((x-referencia)/x).abs < 0.0001 }, inicial)
 end
 
-print "con precision doble (mantisa: 52 bits)\n" 
+require "timeout"
+{53 => "doble", 23 => "simple simulada", 13 => "custom 13 bits", 10 => "media"}.each do |k,v|
+timeout(10) do
 
-print "raiz cuadrada de tres: ", raiz(3.0,2.0, 3**0.5), "\n"
-print "raiz cuadrada de cinco: ", raiz(5.0,2.0, 5**0.5), "\n"
-print "raiz cubica de tres: ", raiz(3.0,3.0, 3**(1.0/3.0)), "\n"
+  print "con precision #{v} (mantisa: #{k} bits)\n" 
 
-print "con precision simple (mantisa: 23 bits)\n" 
-
-print "raiz cuadrada de tres: ", raiz(3.0.single,2.0.single, 3**0.5), "\n"
-print "raiz cuadrada de cinco: ", raiz(5.0.single,2.0.single, 5**0.5), "\n"
-print "raiz cubica de tres: ", raiz(3.0.single,3.0.single, 3**(1.0/3.0)), "\n"
+  print "raiz cuadrada de tres: ", raiz(3.0.single(k),2.0.single(k), 3**0.5), "\n"
+  print "raiz cuadrada de cinco: ", raiz(5.0.single(k),2.0.single(k), 5**0.5), "\n"
+  print "raiz cubica de tres: ", raiz(3.0.single(k),3.0.single(k), 3**(1.0/3.0)), "\n"
+  print "\n"
+end
+end
 
