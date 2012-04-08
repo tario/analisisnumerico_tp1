@@ -1,7 +1,7 @@
 class Float
   def binary_round(decimals = 0)
     factor = 2**decimals
-    (self * factor).round(0).to_f / factor
+    (self * factor).round.to_f / factor
   end
 
   # extrae la mantisa del numero
