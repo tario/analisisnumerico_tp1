@@ -191,7 +191,7 @@ iteraciones = 0
 {53 => "doble", 23 => "simple simulada", 14 => "custom 14 bits", 10 => "media simulada"}.each do |k,v|
 timeout(10) do
 
-  print "con precision #{v} (mantisa: #{k} bits)\n" 
+  print "con precision #{v} (#{k} bits de mantisa)\n" 
 
   contador = lambda{ iteraciones = iteraciones + 1}
 
