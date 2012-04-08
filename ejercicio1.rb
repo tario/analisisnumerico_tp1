@@ -161,9 +161,10 @@ end
 #   print "raiz cuadrada de dos: ", raiz(2,2), "\n"
 #   print "raiz cuadrada de tres: ", raiz(3,2), "\n"
 
-def raiz(valor,exponente,referencia)
+def raiz(valor,exponente,referencia, contador = nil)
   # planteamos una funcion cuya raiz es tambien la raiz que intentamos aproximar
-  funcion = lambda{|x| x**(exponente) - valor} # NOTA: ** significa elevar x al exponente
+  funcion = lambda{|x| contador.call;
+       x**(exponente) - valor} # NOTA: ** significa elevar x al exponente
 
   # definimos la derivada de la funcion de la cual queremos obtener el punto fijo
   # ya que el metodo de newton rapson requiere ese parametro tambien
@@ -185,14 +186,26 @@ def raiz(valor,exponente,referencia)
 end
 
 require "timeout"
+iteraciones = 0
+
 {53 => "doble", 23 => "simple simulada", 14 => "custom 14 bits", 10 => "media simulada"}.each do |k,v|
 timeout(10) do
 
   print "con precision #{v} (mantisa: #{k} bits)\n" 
 
-  print "raiz cuadrada de tres: ", raiz(3.0.single(k),2.0.single(k), 3**0.5), "\n"
-  print "raiz cuadrada de cinco: ", raiz(5.0.single(k),2.0.single(k), 5**0.5), "\n"
-  print "raiz cubica de tres: ", raiz(3.0.single(k),3.0.single(k), 3**(1.0/3.0)), "\n"
+  contador = lambda{ iteraciones = iteraciones + 1}
+
+  r23 = raiz(3.0.single(k),2.0.single(k), 3**0.5, contador)
+  print "raiz cuadrada de tres: #{r23} resuelto con #{iteraciones} iteraciones\n"
+
+  iteraciones = 0
+  r25 = raiz(5.0.single(k),2.0.single(k), 5**0.5, contador)
+  print "raiz cuadrada de cinco: #{r25}, resuelto con #{iteraciones} iteraciones\n"
+
+  iteraciones = 0
+  r33 = raiz(3.0.single(k),3.0.single(k), 3**(1/3.0), contador)
+  print "raiz cubica de tres: #{r33}, resuelto con #{iteraciones} iteraciones\n"
+
   print "\n"
 end
 end
