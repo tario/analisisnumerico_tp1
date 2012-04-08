@@ -72,6 +72,14 @@ class FloatPrecisionDecorator
     @inner = inner.to_f
   end
 
+  def to_f
+    @inner
+  end
+
+  def ==(other)
+    self.to_f == other.to_f
+  end
+
   def method_missing(m,*x)
     # todas las operaciones sobre el numero se ejecutan sobre el float verdadero
     # y se obtiene el verdadero resultado con precision completa del Float original
@@ -109,7 +117,6 @@ class FloatPrecisionDecorator
     @inner.inspect
   end
 end
-
 
 # encuentra la raiz de x = f[x] usando la tecnica del punto fijo
 # hasta obtener un error menor que el especificado comparado con
